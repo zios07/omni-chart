@@ -1,0 +1,101 @@
+@CHARSET "UTF-8";
+
+body{
+	font-family: Consolas;	
+}
+
+label{
+	font-size: 80%;
+}
+span{
+	font-size: 95%;
+	color: red;
+	font-family: arial;
+}
+
+#omniDescription{
+	font-size: 100%;
+	border: 1px solid black;
+	margin-top: 10px;
+	margin-left: 30px;
+	width: 800px;
+	padding: 20px;
+	text-align: center;
+	line-height: 190%;
+}
+label{
+	font-size: 1.2em;
+}
+.btnInsc{
+	width: 120px;
+	height: 30px;
+}
+input{
+	border-radius: 6px;
+	margin-top:8px;
+}
+#top{
+	float:right;
+	margin-right:50px;
+	margin-top: 10px;
+	border: 1px solid black;
+	padding: 15px;
+	border-radius: 8px;
+
+}
+
+#btnDeconnexion{
+	background-color: red;
+	color: white;
+}
+
+img{
+	margin-top: 20px;
+	float: left;
+	margin-left:50px;
+}
+
+a{	
+	text-decoration: none;
+}
+
+ul{
+	margin-left: 330px;
+}
+
+#nav{
+	margin-top: 120px;
+	background-color: rgb(9,28,91);
+	border: 1px solid white;
+	padding: 10px;
+}
+a.nav{
+	border: 2px solid white;
+	margin: 10px;
+	padding: 10px;
+	border-radius: 9px;
+	font-size: 105%;
+	color: white;
+
+}
+
+#ContactezNousInfos{
+	border: 1px solid black;
+	margin-top: 70px;
+	margin-left: 250px;
+	width: 800px;
+	padding: 20px;
+	text-align: center;
+}
+
+li{
+	display: inline-block;
+	
+}
+a.nav:hover{
+	background-color: white;
+	color: black;
+}
+.btnCxForm{
+	height: 30px;
+}

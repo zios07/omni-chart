@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+</h:head>
+
+<h:body>
+
+	<ui:include src="Header.xhtml"></ui:include>
+
+	<br />
+	<br />
+	<br />
+	<ui:fragment
+		rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}">
+
+		<center>
+			<fieldset>
+				<legend>Ajout d'Entité :</legend>
+				<br />
+				<h:form>
+					<h:panelGrid columns="2" cellpadding="8">
+
+						<h:outputLabel value="Nom"></h:outputLabel>
+						<h:inputText value="#{majEntiteBean.entiteVo.nom}" required="true"></h:inputText>
+
+						<h:outputLabel value="Description"></h:outputLabel>
+						<h:inputText value="#{majEntiteBean.entiteVo.description}" />
+
+
+
+
+						<h:outputLabel value="Entite mère"></h:outputLabel>
+
+						<p:selectOneMenu name="entiteMere" id="entiteMereOneMenu"
+							style="width:180px;" value="#{majEntiteBean.entiteVo.entiteMere}"
+							converter="entiteConverter">
+							<f:selectItem itemLabel="Selectionnez .. " value="#{null}" />
+							<f:selectItems value="#{majEntiteBean.listeEntites}" var="entite"
+								itemLabel="#{entite.nom}" itemValue="#{entite}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+
+
+						<h:outputLabel value="Responsable"></h:outputLabel>
+
+						<p:selectOneMenu name="responsable" id="responsableOneMenu"
+							style="width:180px;"
+							value="#{majEntiteBean.entiteVo.responsable}"
+							converter="collaborateurConverter">
+							<f:selectItem itemLabel="Selectionnez .. " value="#{null}" />
+							<f:selectItems
+								value="#{majCollaborateurBean.availableResponsableList}"
+								var="responsable" itemLabel="#{responsable.idCollaborateur}"
+								itemValue="#{responsable}">
+							</f:selectItems>
+						</p:selectOneMenu>
+
+
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" cellpadding="8">
+						<h:commandButton styleClass="btn" value="Valider"
+							action="#{majEntiteBean.creerEntite()}">
+							<f:param name="btnId" value="valider" />
+						</h:commandButton>
+						<h:commandButton styleClass="btn" value="Annuler"
+							action="MajEntite?faces-redirect=true">
+							<f:param name="btnId" value="viderLesChamps" />
+						</h:commandButton>
+					</h:panelGrid>
+				</h:form>
+				<br />
+			</fieldset>
+		</center>
+	</ui:fragment>
+</h:body>
+</html>

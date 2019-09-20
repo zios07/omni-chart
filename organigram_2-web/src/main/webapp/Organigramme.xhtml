@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+	<h:head>
+	
+<h:outputScript>	
+
+	function delay (URL) {
+	    setTimeout( function() { var win = window.open(URL, '_blank');
+  					win.focus(); }, 0 );
+	}
+
+	function getColls(str){
+		
+		document.getElementById('myForm:hidden2').value = str;
+		document.getElementById('myForm:updateForm').click();
+<!-- 		alert(document.getElementById('myForm:hidden2').value); -->
+	}
+	
+	$(function(){
+		var entitesMereList = #{majEntiteBean.jsonEntitesMereList};	
+		var entitesFilleList = #{majEntiteBean.jsonEntitesFilleList};
+		
+		var content = $('#org').html();
+
+		for(var i = 0 ; i &lt; entitesMereList.length ; i++){
+			
+			var $nom = entitesMereList[i].nom;
+			var $sup_id = $nom.replace(/\s+/g, '');
+			
+			content += '<li><span class="nomEntite">'+$nom+'</span><br/><ul id="'+$sup_id+'"></ul><a style="cursor:pointer; color:#E05E00" class="myspan" onclick="getColls(\''+$nom+'\')" id="link_'+nomEntiteID+'">Directeurs</a></li>';
+			$('#org').html(content);
+		}
+		
+		for(var i = 0 ; i &lt; entitesFilleList.length ; i++){
+		
+			var nomEntite = entitesFilleList[i].nom;
+			var $nomEntiteMere = entitesFilleList[i].entiteMere.nom;
+			$nomEntiteMere = $nomEntiteMere.replace(/\s+/g, '');
+			
+			var contentMere = $('#'+$nomEntiteMere).html();							
+			var nomEntiteID = nomEntite.replace(/\s+/g, '');
+			var motherContent = $('#'+$nomEntiteMere).html();
+						
+			motherContent += '<li id="id_'+nomEntiteID+'"><span class="nomEntite">'+nomEntite+'</span><br/><ul id="'+nomEntiteID+'"></ul><a style="cursor:pointer; color:#E05E00" class="myspan" onclick="getColls(\''+nomEntite+'\')" id="link_'+nomEntiteID+'">Equipe</a></li>';
+			$('#'+$nomEntiteMere).html(motherContent);
+		}
+	})
+						
+						
+					
+</h:outputScript>
+
+	<link rel="stylesheet" href="resources/js/jquery.jOrgChart.css" />
+	<link rel="stylesheet" href="resources/js/custom.css" />
+	<link href="resources/js/prettify.css" type="text/css" rel="stylesheet" />
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+	<h:outputScript library="js" name="organigram_script.js"></h:outputScript>
+
+	<script type="text/javascript" src="resources/js/prettify.js"></script>
+
+	<!-- jQuery includes -->
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+
+	<script src="resources/js/jquery.jOrgChart.js"></script>
+	<!-- 	<script src="resources/js/sc.js"></script> -->
+
+	<!-- 	<h:outputStylesheet name="bootstrap.min.css" library="Default"></h:outputStylesheet> -->
+
+	<!-- 	<h:outputStylesheet name="custom.css" library="Default"></h:outputStylesheet> -->
+
+	<!-- 	<h:outputStylesheet name="prettify.css" library="Default"></h:outputStylesheet> -->
+
+	<!-- 	<h:outputStylesheet name="jquery.jOrgChart.css" library="Default"></h:outputStylesheet> -->
+
+	<!-- 	<h:outputScript library="js" name="jquery.jOrgChart.js"></h:outputScript> -->
+	<!-- 		<h:outputScript library="js" name="sc.js"></h:outputScript> -->
+
+	<!-- 	<h:outputScript library="js" name="prettify.js"></h:outputScript> -->
+	<!-- 	<h:outputScript library="js" name="jquery-3.1.1.js"></h:outputScript> -->
+	<style>
+		body {
+			color: black;
+		}
+	</style>
+	<script type="text/javascript">
+		$(function() {
+
+			$("#org").jOrgChart({
+				chartElement : '#chart',
+				dragAndDrop : true
+			});
+		});
+	</script>
+
+
+</h:head>
+<h:body>
+	<h:graphicImage library="Default" name="omnishore.png" />
+
+	<ui:fragment
+		rendered="#{loginBean.compteVo.loggedIn eq true or not empty sessionScope['connected'] }">
+		<div id="top" class="welcomeDiv">
+			<h:form>
+				<ui:fragment rendered="#{sessionScope['connectionType'] eq 'Basic'}">
+					<p:graphicImage alt="" value="#{imagesBean.image}" width="60px"
+						height="60px" style="margin:0px;margin-right: 20px;">
+						<f:param name="id"
+							value="#{loginBean.compteVo.collaborateur.idCollaborateur}" />
+					</p:graphicImage>
+				</ui:fragment>
+				<ui:fragment
+					rendered="#{sessionScope['connectionType'] eq 'Google' or sessionScope['connectionType'] eq 'LinkedIn'}">
+					<p:graphicImage alt="" value="#{sessionScope['photoUrl']}"
+						width="60px" height="60px" style="margin:0px;margin-right: 20px;">
+					</p:graphicImage>
+				</ui:fragment>
+				<h:outputLabel style="font-size:1.2em"
+					value="#{loginBean.compteVo.login} #{sessionScope['fullName']}" />
+				<br />
+				<div align="right">
+					<h:commandButton
+						style="width:140px;height:34px;	background-color: rgb(230,38,44);color:white"
+						value="Se Deconnecter" action="#{loginBean.seDeconnecter()}" />
+				</div>
+			</h:form>
+		</div>
+	</ui:fragment>
+
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<div id="nav">
+		<h:panelGroup styleClass="navbarGroup">
+			<h:panelGrid styleClass="navbarPanel" columns="5">
+				<h:outputLink styleClass="navbar" value="Accueil.jsf">Accueil</h:outputLink>
+				<h:outputLink styleClass="navbar" value="Organigramme.jsf">Organigramme</h:outputLink>
+				<ui:fragment
+					rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}">
+					<h:outputLink styleClass="navbar" value="MajEntite.jsf">Gestion des Entites</h:outputLink>
+				</ui:fragment>
+				<ui:fragment
+					rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true or loginBean.compteVo.collaborateur.isResponsable eq true}">
+					<h:outputLink styleClass="navbar" value="MajCollaborateur.jsf">Gestion des Collaborateurs</h:outputLink>
+				</ui:fragment>
+			</h:panelGrid>
+		</h:panelGroup>
+	</div>
+	<br />
+	<br />
+	<br />
+	<ui:fragment rendered="#{loginBean.compteVo.loggedIn eq false and empty sessionScope['connected']}">
+		<fieldset>
+			<legend>Connexion :</legend>
+			<div id="cxOrganigramme">
+				<h:form>
+
+					<h:panelGrid columns="2" cellpadding="2">
+						<h:outputLabel styleClass="lblHeader" id="lblLogin" value="Login"></h:outputLabel>
+						<h:inputText styleClass="inputTexts"
+							value="#{loginBean.compteVo.login}"></h:inputText>
+
+						<h:outputLabel styleClass="lblHeader" value="Mot de passe"></h:outputLabel>
+						<h:inputSecret styleClass="inputTexts"
+							value="#{loginBean.compteVo.motDePasse}" />
+					</h:panelGrid>
+					<p:outputLabel value="#{loginBean.erreurMessage}"
+						style="color:red;font-size:80%"></p:outputLabel>
+					<br />
+					<h:panelGrid columns="2" cellpadding="6">
+						<h:commandButton styleClass="btn" value="Se connecter"
+							action="#{loginBean.seConnecter()}">
+							<f:param name="btnId" value="connexion" />
+						</h:commandButton>
+					</h:panelGrid>
+				</h:form>
+			</div>
+			<br />
+			<h:outputLabel>Vous n'avez pas un compte ? <b><h:outputLink
+						value="Inscription1.jsf">Inscrivez-vous</h:outputLink></b>
+			</h:outputLabel>
+		</fieldset>
+	</ui:fragment>
+	<ui:fragment rendered="#{loginBean.compteVo.loggedIn eq true or not empty sessionScope['connected']}">
+		<center>
+			<h:form id="myForm">
+						
+				<ul id="org" style="display:none">
+
+						
+				</ul>
+				
+				<div id="chart" class="orgChart">
+					
+				</div>
+								
+				<h:inputHidden id="hidden2" value="#{organigrammeBean.clickedEntityName}" ></h:inputHidden>
+				
+				<p:commandButton style="display:none" update="hidden2 dlg" id="updateForm" value="update" oncomplete="PF('collsDialog').show()"></p:commandButton>
+			</h:form>
+		</center>
+	
+	</ui:fragment>
+	
+	<ui:fragment rendered="#{not empty organigrammeBean.clickedEntityName}">
+	
+		<p:dialog modal="true" widgetVar="collsDialog" width="1200" height="auto" id="dlg">
+			
+			<ui:include src="Equipe.xhtml"></ui:include>
+			
+		</p:dialog>
+		
+	</ui:fragment>
+	
+</h:body>
+</html>

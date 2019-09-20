@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+</h:head>
+
+<h:body>
+
+	<ui:include src="Header.xhtml"></ui:include>
+	<br />
+	<br />
+	<br />
+
+	<ui:fragment
+		rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true or loginBean.compteVo.collaborateur.isResponsable eq true}">
+
+
+		<center>
+			<fieldset>
+				<legend>Ajout collaborateur :</legend>
+				<br />
+				<h:form enctype="multipart/form-data" id="ajoutColl">
+					<h:panelGrid id="ajoutCollPane" columns="3" cellpadding="8">
+						<p:outputLabel styleClass="lblPrime" value="Photo"></p:outputLabel>
+						<p:fileUpload
+							value="#{majCollaborateurBean.collaborateur.uploadedPhoto}"
+							mode="simple" skinSimple="true" />
+						<h:outputText styleClass="erreur"
+							value="#{majCollaborateurBean.erreurs['uploadedPhoto']}" />
+						<p:outputLabel styleClass="lblPrime" value="Nom"></p:outputLabel>
+						<p:inputText value="#{majCollaborateurBean.collaborateur.nom}"></p:inputText>
+						<h:outputText styleClass="erreur"
+							value="#{majCollaborateurBean.erreurs['nom']}" />
+
+						<p:outputLabel styleClass="lblPrime" value="Prenom"></p:outputLabel>
+						<p:inputText value="#{majCollaborateurBean.collaborateur.prenom}"></p:inputText>
+						<h:outputText styleClass="erreur"
+							value="#{majCollaborateurBean.erreurs['prenom']}" />
+
+						<p:outputLabel styleClass="lblPrime" value="CIN"></p:outputLabel>
+						<p:inputText value="#{majCollaborateurBean.collaborateur.CIN}"></p:inputText>
+						<h:outputText styleClass="erreur"
+							value="#{majCollaborateurBean.erreurs['CIN']}" />
+
+						<p:outputLabel styleClass="lblPrime" value="Date de naissance"></p:outputLabel>
+						<p:calendar yearRange="c-70:c" placeholder="yyyy-MM-dd"
+							value="#{majCollaborateurBean.collaborateur.dateNaissance}"
+							navigator="true" pattern="yyyy-MM-dd" />
+						<h:outputLabel></h:outputLabel>
+
+						<p:outputLabel styleClass="lblPrime" value="Date d'embauche"></p:outputLabel>
+						<p:calendar yearRange="c-20:c" placeholder="yyyy-MM-dd"
+							value="#{majCollaborateurBean.collaborateur.dateEmbauche}"
+							navigator="true" pattern="yyyy-MM-dd" />
+						<h:outputLabel></h:outputLabel>
+
+						<p:outputLabel styleClass="lblPrime"
+							value="Date premier recrutement"></p:outputLabel>
+						<p:calendar yearRange="c-30:c" placeholder="yyyy-MM-dd"
+							value="#{majCollaborateurBean.collaborateur.datePremierRec}"
+							navigator="true" pattern="yyyy-MM-dd" />
+						<h:outputLabel></h:outputLabel>
+
+
+						<p:outputLabel
+							rendered="#{loginBean.compteVo.collaborateur.isResponsable eq true and loginBean.compteVo.collaborateur.isAdmin eq false}"
+							styleClass="lblPrime" value="Entite"></p:outputLabel>
+						<p:selectOneMenu
+							rendered="#{loginBean.compteVo.collaborateur.isResponsable eq true and loginBean.compteVo.collaborateur.isAdmin eq false}"
+							value="#{majCollaborateurBean.collaborateur.entite}"
+							style="width:180px;" converter="entiteConverter">
+							<f:selectItem
+								itemLabel="#{loginBean.compteVo.collaborateur.entite.nom}"
+								itemValue="#{loginBean.compteVo.collaborateur.entite}" />
+						</p:selectOneMenu>
+
+
+						<p:outputLabel
+							rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}"
+							styleClass="lblPrime" value="Entite"></p:outputLabel>
+						<p:selectOneMenu
+							rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}"
+							name="entite" id="entiteOneMenu" style="width:180px;"
+							converter="entiteConverter"
+							value="#{majCollaborateurBean.collaborateur.entite}">
+							<f:selectItem itemLabel="" itemValue="#{null}" />
+							<f:selectItems
+								value="#{majCollaborateurBean.collaborateur.isResponsable eq true ? majEntiteBean.listeEntitesSansResponsable : majEntiteBean.listeEntites}"
+								var="entite" itemLabel="#{entite.nom}" itemValue="#{entite}">
+							</f:selectItems>
+						</p:selectOneMenu>
+						<h:outputLabel></h:outputLabel>
+
+						<p:outputLabel
+							rendered="#{loginBean.compteVo.collaborateur.isResponsable eq true or loginBean.compteVo.collaborateur.isAdmin eq true}"
+							styleClass="lblPrime" value="Fonction"></p:outputLabel>
+						<p:selectOneMenu
+							rendered="#{loginBean.compteVo.collaborateur.isResponsable eq true or loginBean.compteVo.collaborateur.isAdmin eq true}"
+							name="entite" id="fonctionOneMenu" style="width:180px;"
+							converter="fonctionConverter"
+							value="#{majCollaborateurBean.collaborateur.fonction}">
+							<f:selectItem itemLabel="" itemValue="#{null}" />
+							<f:selectItems
+								value="#{majCollaborateurBean.listFonctions}"
+								var="fonction" itemLabel="#{fonction.libelleFonction}" itemValue="#{fonction}">
+							</f:selectItems>
+						</p:selectOneMenu>
+						<h:outputLabel></h:outputLabel>
+
+						<p:outputLabel
+							rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}"
+							styleClass="lblPrime" value="isResponsable"></p:outputLabel>
+						<p:selectBooleanCheckbox
+							rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}"
+							value="#{majCollaborateurBean.collaborateur.isResponsable}"
+							id="isResp">
+							<p:ajax update="entiteOneMenu" />
+						</p:selectBooleanCheckbox>
+						<h:outputLabel></h:outputLabel>
+
+						<p:outputLabel
+							rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}"
+							styleClass="lblPrime" value="isAdmin"></p:outputLabel>
+						<p:selectBooleanCheckbox
+							rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}"
+							value="#{majCollaborateurBean.collaborateur.isAdmin}">
+						</p:selectBooleanCheckbox>
+						<h:outputLabel></h:outputLabel>
+
+					</h:panelGrid>
+
+
+					<h:panelGrid columns="2" cellpadding="8">
+						<h:commandButton styleClass="btn" value="Valider"
+							action="#{majCollaborateurBean.creerCollaborateur()}"
+							update="@form" oncomplete="clickRep()">
+							<f:param name="btnId" value="valider" />
+						</h:commandButton>
+						<h:commandButton styleClass="btn" update="errorMessages"
+							value="Annuler" action="MajCollaborateur?faces-redirect=true">
+							<f:param name="btnId" value="viderLesChamps" />
+						</h:commandButton>
+					</h:panelGrid>
+				</h:form>
+				<br />
+			</fieldset>
+		</center>
+	</ui:fragment>
+</h:body>
+</html>

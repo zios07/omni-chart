@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	
+	<!-- jQuery includes -->
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+	
+</h:head>
+
+<h:body onload="clickme()">
+	<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui">
+		<h:form>
+
+			<p:dataTable editable="true" id="colls" var="collaborateur"
+				paginator="true" rows="10" value="#{responsableBean.theColls}"
+				style="margin-bottom:20px">
+
+				<f:facet name="header">
+							Liste des collaborateurs
+						</f:facet>
+
+				<p:ajax event="rowEdit" listener="#{majCollaborateurBean.onRowEdit}"
+					update=":form:msgs" />
+				<p:ajax event="rowEditCancel"
+					listener="#{majCollaborateurBean.onRowCancel}" update=":form:msgs" />
+
+				<p:column width="20%" headerText="Nom" sortBy="#{collaborateur.nom}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{collaborateur.nom}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{collaborateur.nom}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column width="20%" headerText="Prenom"
+					sortBy="#{collaborateur.prenom}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{collaborateur.prenom}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{collaborateur.prenom}" style="width:100%" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column sortBy="#{collaborateur.dateNaissance}" width="20%"
+					headerText="Date de naissance">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{collaborateur.dateNaissance}">
+								<f:convertDateTime pattern="yyyy-MM-dd" type="date" />
+							</h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar yearRange="c-70:c" placeholder="yyyy-MM-dd"
+								value="#{collaborateur.dateNaissance}" navigator="true"
+								pattern="yyyy-MM-dd" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column sortBy="#{collaborateur.dateEmbauche}" width="20%"
+					headerText="Date d'embauche">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{collaborateur.dateEmbauche}">
+								<f:convertDateTime pattern="yyyy-MM-dd" type="date" />
+							</h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar yearRange="c-70:c" placeholder="yyyy-MM-dd"
+								value="#{collaborateur.dateEmbauche}" navigator="true"
+								pattern="yyyy-MM-dd" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column sortBy="#{collaborateur.datePremierRec}" width="20%"
+					headerText="Date premier recrutement">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{collaborateur.datePremierRec}">
+								<f:convertDateTime pattern="yyyy-MM-dd" type="date" />
+							</h:outputText>
+						</f:facet>
+						<f:facet name="input">
+							<p:calendar yearRange="c-70:c" placeholder="yyyy-MM-dd"
+								value="#{collaborateur.datePremierRec}" navigator="true"
+								pattern="yyyy-MM-dd" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column width="20%" headerText="Etat "
+					sortBy="#{collaborateur.actif}">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText
+								value="#{collaborateur.actif eq true? 'Actif' : 'Inactif'}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:selectOneMenu style="width:75%" value="#{collaborateur.actif}">
+								<f:selectItem itemLabel="Actif" itemValue="#{true}" />
+								<f:selectItem itemLabel="Inactif" itemValue="#{false}" />
+								<f:converter converterId="booleanConverter" />
+							</p:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column style="width:60px" headerText="Actions">
+					<p:rowEditor style="width:100px" />
+					<p:commandLink id="deleteLink" update="@form" process="@this"
+						styleClass="ui-icon ui-icon-trash"
+						actionListener="#{majCollaborateurBean.removeCollaborateur(collaborateur)}">
+						<p:confirm header="Confirmation"
+							message="Voulez-vous vraiment supprimer ce collaborateur ? "
+							icon="ui-icon-alert" />
+					</p:commandLink>
+					<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+						<p:commandButton value="Oui" type="button"
+							styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+						<p:commandButton value="Annuler" type="button"
+							styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					</p:confirmDialog>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+		
+		<ui:fragment rendered="#{not empty loginBean.compteVo.collaborateur}">
+
+			<h:form id="myForm">
+	
+				<h:inputHidden id="coll"
+					value="#{loginBean.compteVo.collaborateur.nom}"></h:inputHidden>
+				<h:inputHidden id="connectedColl"
+					value="#{responsableBean.connectedCollaborateurName}"></h:inputHidden>
+				<p:commandButton style="display:none" value="setValue"
+					id="updateColl" actionl="#{responsableBean.fillList()}"></p:commandButton>
+	
+			</h:form>
+	
+		</ui:fragment>
+		
+	</ui:composition>
+	
+</h:body>
+</html>

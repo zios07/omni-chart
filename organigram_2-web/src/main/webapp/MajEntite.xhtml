@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:a4j="http://richfaces.org/a4j">
+
+<h:head>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+</h:head>
+
+<h:body>
+
+	<ui:include src="Header.xhtml"></ui:include>
+
+	<br />
+	<br />
+	<ui:fragment
+		rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}">
+
+		<fieldset>
+			<legend>
+				<h2 align="center">Mise à jour d'Entite</h2>
+			</legend>
+
+			<rich:modalPanel id="Busy" autosized="true" zindex="3000">
+				<h:panelGrid width="600" cellpadding="20" styleClass="noStyle"
+					columns="1">
+					<h:outputLink style="width:200px;" value="AjoutEntite.jsf">
+						<h:graphicImage style="width:30px;height:30px" library="Default"
+							name="add.png" />
+						<h2>&nbsp;Ajouter une Entité</h2>
+					</h:outputLink>
+				</h:panelGrid>
+			</rich:modalPanel>
+
+			<h:form id="form">
+				<p:growl id="msgs" showDetail="true" />
+
+				<p:dataTable editable="true" id="entites" var="entite" paginator="true" rows="10"
+					value="#{majEntiteBean.listeEntites}" style="margin-bottom:20px">
+					<f:facet name="header">
+					           Liste des entites : 
+					       </f:facet>
+
+					<p:ajax event="rowEdit" listener="#{majEntiteBean.onRowEdit}"
+						update=":form:msgs" />
+					<p:ajax event="rowEditCancel"
+						listener="#{majEntiteBean.onRowCancel}" update=":form:msgs" />
+
+
+					<p:column headerText="Nom" sortBy="#{entite.nom}">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{entite.nom}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{entite.nom}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+					<p:column headerText="Description">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{entite.description}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:inputText value="#{entite.description}" style="width:100%" />
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+
+					<p:column headerText="Entite mère" sortBy="#{entite.entiteMere.nom}">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText value="#{entite.entiteMere.nom}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu style="width:230px"
+									value="#{entite.entiteMere}" converter="entiteConverter">
+									<f:selectItem itemLabel="Sans entite mère" itemValue="#{null}" />
+									<f:selectItems value="#{majEntiteBean.listeEntites}"
+										var="entiteMere" itemLabel="#{entiteMere.nom}"
+										itemValue="#{null}">
+									</f:selectItems>
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+
+					<p:column headerText="Responsable" sortBy="#{entite.responsable.nom} #{entite.responsable.prenom}">
+						<p:cellEditor>
+							<f:facet name="output">
+								<h:outputText
+									value="#{entite.responsable.nom} #{entite.responsable.prenom}" />
+							</f:facet>
+							<f:facet name="input">
+								<p:selectOneMenu style="width:230px"
+									value="#{entite.responsable}"
+									converter="collaborateurConverter">
+									<f:selectItem
+										itemLabel="#{entite.responsable.nom} #{entite.responsable.prenom}"
+										itemValue="#{entite.responsable}"  />
+									<f:selectItems
+										value="#{majCollaborateurBean.availableResponsableList}"
+										var="responsable"
+										itemLabel="#{responsable.nom} #{responsable.prenom}"
+										itemValue="#{responsable}">
+									</f:selectItems>
+								</p:selectOneMenu>
+							</f:facet>
+						</p:cellEditor>
+					</p:column>
+
+
+					<p:column style="width:60px" headerText="Actions">
+						<p:rowEditor />
+						<p:commandLink id="deleteLink" update="@form" process="@this"
+							styleClass="ui-icon ui-icon-trash"
+							actionListener="#{majEntiteBean.supprimerEntite(entite)}">
+						<p:confirm header="Confirmation" message="Voulez-vous vraiment supprimer cette entite ? " icon="ui-icon-alert" />
+						</p:commandLink>
+						 <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					        <p:commandButton value="Oui" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+					        <p:commandButton value="Annuler" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+					    </p:confirmDialog>
+					</p:column>
+				</p:dataTable>
+
+			</h:form>
+		</fieldset>
+	</ui:fragment>
+</h:body>
+</html>

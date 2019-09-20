@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+</h:head>
+
+<h:body>
+	<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui">
+
+		<h:form>
+			<br />
+			<h2 align="center">
+				<u><b style="font-size: 120%">
+						#{organigrammeBean.clickedEntityName}</b></u>
+			</h2>
+			<br />
+			<br />
+			<p:dataTable scrollable="true" scrollHeight="400"
+				emptyMessage="Aucun collaborateurs n'est actif dans cette entite"
+				value="#{organigrammeBean.getCollaborateursOfClickedEntite()}"
+				var="collaborateur">
+				<p:column headerText="Photo">
+					<p:graphicImage value="#{imagesBean.image}" width="60px"
+						height="60px">
+						<f:param name="id" value="#{collaborateur.idCollaborateur}" />
+					</p:graphicImage>
+				</p:column>
+				<p:column headerText="Nom" sortBy="#{collaborateur.nom}">#{collaborateur.nom}</p:column>
+				<p:column headerText="Prenom">#{collaborateur.prenom}</p:column>
+				<p:column headerText="Date naissance">#{collaborateur.dateNaissance}</p:column>
+				<p:column headerText="Date d'embauche">#{collaborateur.dateEmbauche}</p:column>
+				<p:column headerText="Date premier recrutement">#{collaborateur.datePremierRec}</p:column>
+				<p:column headerText="Entite">#{collaborateur.entite.nom}</p:column>
+				<p:column headerText="Etat">#{collaborateur.actif eq true? 'Actif' : 'Inactif'}</p:column>
+				<p:column style="background-color: gray; color: white"
+					headerText="Poste">#{collaborateur.isResponsable eq true ? 'Responsable' : empty collaborateur.entite.entiteMere ? 'Directeur' : 'Collaborateur'}</p:column>
+			</p:dataTable>
+			<br />
+			<br />
+		</h:form>
+	</ui:composition>
+</h:body>
+</html>

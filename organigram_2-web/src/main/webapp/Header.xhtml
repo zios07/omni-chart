@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+
+
+	<!-- To invoke bean injection  -->
+	<h:inputHidden styleClass="lblHeader"
+		value="#{authenticationBean.strToInject}"></h:inputHidden>
+
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+	<script type="text/javascript">
+		function myFunc() {
+			document.getElementById('myForm:connectedColl').value = document
+					.getElementById('myForm:coll').value;
+			document.getElementById('myForm:updateColl').click();
+		}
+		
+		
+		$(function(){
+			$('.omniAuthDiv').hide();
+			$('.link_connexionOmnishore').click(function(){
+				$('#connexions').css('display','none');
+				$('.omniAuthDiv').show();
+			});
+		});
+		
+	</script>
+</h:head>
+
+<h:body onload="myFunc()">
+	<h:graphicImage library="Default" name="omnishore.png" />
+	<ui:fragment
+		rendered="#{loginBean.compteVo.loggedIn eq false and empty sessionScope['connected']}">
+
+		<div id="connexions">
+			<h:form>
+
+				<h:commandButton styleClass="authentificationBtn"
+					image="/resources/Default/lkin_btn.jpg"
+					action="#{authenticationBean.goToLinkedIn}" >
+					<f:param name="btnId" value="linkedin" />
+				</h:commandButton>
+
+				<h:commandButton styleClass="authentificationBtn"
+					image="/resources/Default/google_inline_share.png"
+					action="#{authenticationBean.goToGoogle}">
+					<f:param name="btnId" value="googlePlus" />
+				</h:commandButton>
+				<br/>
+				<h:outputText styleClass="link_connexionOmnishore" style="color:blue;cursor:pointer" value="J'ai un compte Omnishore"
+					id="connexionOmnishore">
+				</h:outputText>
+				<br/>	
+				<h:commandLink id="inscriptionLink" action="Inscription1?faces-redirect=true" styleClass="link_inscriptionLink " style="color:blue" value="Créer un compte" ></h:commandLink>
+			</h:form>
+		</div>
+
+
+		<div id="top" class="omniAuthDiv" style="display: none;">
+			<h:form>
+				<f:metadata>
+					<f:viewAction action="#{loginBean.checkAuth}" />
+				</f:metadata>
+				<h:panelGrid columns="2" cellpadding="2">
+					<h:outputLabel styleClass="lblHeader" id="lblLogin" value="Login"></h:outputLabel>
+					<h:inputText styleClass="inputTexts"
+						value="#{loginBean.compteVo.login}"></h:inputText>
+
+					<h:outputLabel styleClass="lblHeader" value="Mot de passe "></h:outputLabel>
+					<h:inputSecret styleClass="inputTexts"
+						value="#{loginBean.compteVo.motDePasse}" />
+				</h:panelGrid>
+				<p:outputLabel value="#{loginBean.erreurMessage}"
+					style="color:red;font-size:80%"></p:outputLabel>
+				<br />
+				<h:commandButton styleClass="btn" value="Retour">
+				</h:commandButton>
+				<h:commandButton styleClass="btn" value="Se connecter"
+					action="#{loginBean.combinedFunction()}">
+					<f:param name="btnId" value="connexion" />
+				</h:commandButton>
+			
+
+			</h:form>
+		</div>
+	</ui:fragment>
+
+
+	<ui:fragment rendered="#{not empty sessionScope['connected']}">
+		<div id="top" class="welcomeDiv">
+			<h:form>
+				<ui:fragment rendered="#{sessionScope['connectionType'] eq 'Basic'}">
+					<p:graphicImage alt="" value="#{imagesBean.image}" width="60px"
+						height="60px" style="margin:0px;margin-right: 20px;">
+						<f:param name="id"
+							value="#{loginBean.compteVo.collaborateur.idCollaborateur}" />
+					</p:graphicImage>
+				</ui:fragment>
+				<ui:fragment
+					rendered="#{sessionScope['connectionType'] eq 'Google' or sessionScope['connectionType'] eq 'LinkedIn'}">
+					<p:graphicImage alt="" value="#{sessionScope['photoUrl']}"
+						width="60px" height="60px" style="margin:0px;margin-right: 20px;">
+					</p:graphicImage>
+				</ui:fragment>
+				<h:outputLabel style="font-size:1.2em"
+					value="#{loginBean.compteVo.login} #{sessionScope['fullName']}" />
+				<br />
+				<div align="right">
+					<h:commandButton
+						style="width:140px;height:34px;	background-color: rgb(230,38,44);color:white"
+						value="Se Deconnecter" action="#{loginBean.seDeconnecter()}" />
+				</div>
+			</h:form>
+		</div>
+	</ui:fragment>
+
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<div id="nav">
+		<h:panelGroup styleClass="navbarGroup">
+			<h:panelGrid styleClass="navbarPanel" columns="5">
+				<h:outputLink styleClass="navbar" value="Accueil.jsf">Accueil</h:outputLink>
+				<h:outputLink styleClass="navbar" value="Organigramme.jsf">Organigramme</h:outputLink>
+				<ui:fragment
+					rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}">
+					<h:outputLink styleClass="navbar" value="MajEntite.jsf">Gestion des Entites</h:outputLink>
+				</ui:fragment>
+				<ui:fragment
+					rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true or loginBean.compteVo.collaborateur.isResponsable eq true}">
+					<h:outputLink styleClass="navbar" value="MajCollaborateur.jsf"
+						onclick="clickme()">Gestion des Collaborateurs</h:outputLink>
+				</ui:fragment>
+			</h:panelGrid>
+		</h:panelGroup>
+	</div>
+
+	<ui:fragment
+		rendered="#{not empty loginBean.compteVo.collaborateur and loginBean.compteVo.collaborateur.isAdmin eq false}">
+
+		<h:form id="myForm">
+
+			<h:inputHidden id="coll"
+				value="#{loginBean.compteVo.collaborateur.nom}"></h:inputHidden>
+			<h:inputHidden id="connectedColl"
+				value="#{responsableBean.connectedCollaborateurName}"></h:inputHidden>
+			<p:commandButton style="display:none" value="setValue"
+				id="updateColl" action="#{responsableBean.fillList()}"></p:commandButton>
+
+		</h:form>
+
+	</ui:fragment>
+</h:body>
+</html>

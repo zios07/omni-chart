@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+	<style>
+	
+		.erreur{
+			color: red;
+			font-family : Verdana;
+			font-size: 80%;
+			font-weight: bold;
+		}
+	
+	</style>
+</h:head>
+
+<h:body>
+	<h:graphicImage library="Default" name="omnishore.png" />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<div id="nav">
+		<h:panelGroup styleClass="navbarGroup">
+			<h:panelGrid styleClass="navbarPanel" columns="5">
+				<h:outputLink styleClass="navbar" value="Accueil.jsf">Accueil</h:outputLink>
+				<h:outputLink styleClass="navbar" value="Organigramme.jsf">Organigramme</h:outputLink>
+				<ui:fragment rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}">
+					<h:outputLink styleClass="navbar" value="MajEntite.jsf">Gestion des Entites</h:outputLink>
+				</ui:fragment>
+				<ui:fragment rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true or loginBean.compteVo.collaborateur.isResponsable eq true}">
+					<h:outputLink styleClass="navbar" value="MajCollaborateur.jsf">Gestion des Collaborateurs</h:outputLink>
+				</ui:fragment>
+			</h:panelGrid>
+		</h:panelGroup>
+	</div>
+	<br />
+	<br />
+	<br />
+	<center>
+		<fieldset>
+			<legend>Inscription :</legend>
+			<br />
+			<h:form>
+				<h:panelGrid columns="3" cellpadding="8">
+					<h:outputLabel value="Login"><font color="red">*</font></h:outputLabel>
+					<h:inputText id="login" value="#{inscriptionBean.compte.login}"></h:inputText>
+					<h:outputText styleClass="erreur"
+						value="#{inscriptionBean.erreurs['login']}" />
+
+					<h:outputLabel value="CIN"><font color="red">*</font></h:outputLabel>
+					<h:inputText id="CIN" value="#{inscriptionBean.compte.CIN}"></h:inputText>
+					<h:outputText styleClass="erreur"
+						value="#{inscriptionBean.erreurs['CIN']}" />
+
+					<h:outputLabel value="Email"><font color="red" style="align:right">*</font></h:outputLabel>
+					<h:inputText id="email" value="#{inscriptionBean.compte.email}"></h:inputText>
+					<h:outputText styleClass="erreur"
+						value="#{inscriptionBean.erreurs['email']}" />
+
+					<h:outputLabel value="Mot de passe"><font color="red">*</font></h:outputLabel>
+					<h:inputSecret id="pass"
+						value="#{inscriptionBean.compte.motDePasse}"></h:inputSecret>
+					<h:outputText styleClass="erreur"
+						value="#{inscriptionBean.erreurs['pass']}" />
+
+
+					<h:outputLabel value="Confirmation"></h:outputLabel>
+					<h:inputSecret id="confirmation"
+						value="#{inscriptionBean.compte.confirmationPWD}" />
+					<h:outputText />
+
+					<h:outputLabel value="Nom"></h:outputLabel>
+					<h:inputText id="nom" value="#{inscriptionBean.compte.nom}"></h:inputText>
+					<h:outputText styleClass="erreur"
+						value="#{inscriptionBean.erreurs['nom']}" />
+
+					<h:outputLabel value="Prenom"></h:outputLabel>
+					<h:inputText id="prenom" value="#{inscriptionBean.compte.prenom}"></h:inputText>
+					<h:outputText styleClass="erreur"
+						value="#{inscriptionBean.erreurs['prenom']}" />
+
+				</h:panelGrid>
+				<h:panelGrid columns="2" cellpadding="8">
+					<h:commandButton styleClass="btn" value="Valider"
+						action="#{inscriptionBean.combinedFunctions()}">
+						<f:param name="btnId" value="valider" />
+					</h:commandButton>
+					<h:commandButton styleClass="btn" value="Annuler" action="Accueil">
+						<f:param name="btnId" value="viderLesChamps" />
+					</h:commandButton>
+				</h:panelGrid>
+			</h:form>
+			<br />
+		</fieldset>
+	</center>
+</h:body>
+</html>

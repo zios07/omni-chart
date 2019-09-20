@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+	<h:outputStylesheet name="style1.css" library="Default"></h:outputStylesheet>
+	<h:outputScript library="js" name="organigram_script.js"></h:outputScript>
+
+	
+</h:head>
+
+<h:body>
+	<h:graphicImage library="Default" name="omnishore.png" />
+
+	<ui:fragment rendered="#{loginBean.compteVo.loggedIn eq true}">
+		<div id="top">
+			<h:form>
+				<h:outputLabel style="font-size:1.2em"
+					value="Bienvenue #{loginBean.compteVo.login}" />
+				<br />
+				<div align="right">
+					<h:commandButton
+						style="width:140px;height:34px;	background-color: rgb(230,38,44);color:white"
+						value="Se Deconnecter" action="#{loginBean.seDeconnecter()}" />
+				</div>
+			</h:form>
+		</div>
+	</ui:fragment>
+
+	<br />
+	<br />
+	<br />
+	<br />
+
+	<div id="nav">
+		<h:panelGroup styleClass="navbarGroup">
+			<h:panelGrid styleClass="navbarPanel" columns="5">
+				<h:outputLink styleClass="navbar" value="Accueil.jsf">Accueil</h:outputLink>
+				<h:outputLink styleClass="navbar" value="Organigramme.jsf">Organigramme</h:outputLink>
+				<ui:fragment
+					rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true}">
+					<h:outputLink styleClass="navbar" value="MajEntite.jsf">Gestion des Entites</h:outputLink>
+				</ui:fragment>
+				<ui:fragment
+					rendered="#{loginBean.compteVo.collaborateur.isAdmin eq true or loginBean.compteVo.collaborateur.isResponsable eq true}">
+					<h:outputLink styleClass="navbar" value="MajCollaborateur.jsf">Gestion des Collaborateurs</h:outputLink>
+				</ui:fragment>
+			</h:panelGrid>
+		</h:panelGroup>
+	</div>
+	<br />
+	<br />
+	<br />
+	<ui:fragment rendered="#{loginBean.compteVo.loggedIn eq false}">
+		<fieldset>
+			<legend>Connexion :</legend>
+			<div id="cxOrganigramme">
+				<h:form>
+
+					<h:panelGrid columns="2" cellpadding="2">
+						<h:outputLabel styleClass="lblHeader" id="lblLogin" value="Login"></h:outputLabel>
+						<h:inputText styleClass="inputTexts"
+							value="#{loginBean.compteVo.login}"></h:inputText>
+
+						<h:outputLabel styleClass="lblHeader" value="Mot de passe"></h:outputLabel>
+						<h:inputSecret styleClass="inputTexts"
+							value="#{loginBean.compteVo.motDePasse}" />
+					</h:panelGrid>
+					<p:outputLabel value="#{loginBean.erreurMessage}"
+						style="color:red;font-size:80%"></p:outputLabel>
+					<br />
+					<h:panelGrid columns="2" cellpadding="6">
+						<h:commandButton styleClass="btn" value="Se connecter"
+							action="#{loginBean.seConnecter()}">
+							<f:param name="btnId" value="connexion" />
+						</h:commandButton>
+					</h:panelGrid>
+				</h:form>
+			</div>
+			<br />
+			<h:outputLabel>Vous n'avez pas un compte ? <b><h:outputLink
+						value="Inscription1.jsf">Inscrivez-vous</h:outputLink></b>
+			</h:outputLabel>
+		</fieldset>
+	</ui:fragment>
+	<ui:fragment rendered="#{loginBean.compteVo.loggedIn eq true}">
+		<h:form id="form">
+			<ui:repeat var="entite" value="#{majEntiteBean.listEntitesMere}">
+					<div
+						style="width: 250px; height: 30px; margin: auto; margin-top: 60px; margin-bottom: 80px">
+
+						<center class="entiteMere"
+							id="#{center_majEntiteBean.getTrimedNom(entite)}"
+							style="background-color: rgb(157, 17, 20); border: 1px solid black; border-collapse: collapse; font-weight: bold; font-size: 1.3em; color: white; cursor: pointer; border-radius: 13px;">
+
+							<table cellpadding="10">
+								<tr>
+									<td align="center" colspan="2"><span class="entiteMere"
+										style="position: relative; top: 30%">#{entite.nom}</span></td>
+								</tr>
+								<tr>
+									<td align="left"><span style="font-size: 0.6em;"><a
+											style="text-decoration: underline;">#{entite.responsable.nom}
+												#{entite.responsable.prenom}</a></span></td>
+									<td align="right"><span style="font-size: 0.6em;"><a
+											style="text-decoration: underline;" class="equipeLink"
+											id="#{majEntiteBean.getTrimedNom(entite)}">Directeurs</a></span></td>
+								</tr>
+							</table>
+						</center>
+
+
+						<div class="nomCollaborateurs"
+							id="collaborateurs_#{majEntiteBean.getTrimedNom(entite)}">
+							<p:dataList
+								value="#{majCollaborateurBean.getOnlyCollaborateursOfEntite(entite)}"
+								var="collaborateur" emptyMessage="" type="none">
+								<h:panelGrid columns="2">
+									<h:column>
+										<p:commandLink update="collaborateurDetail"
+											oncomplete="PF('collaborateurDetail').show()"
+											title="Voir details" styleClass="ui-icon ui-icon-search"
+											style="float:left;margin-right:10px">
+											<f:setPropertyActionListener value="#{collaborateur}"
+												target="#{majCollaborateurBean.selectedCollaborateur}" />
+											<h:outputText
+												value="#{collaborateur.nom}, #{collaborateur.prenom}" />
+										</p:commandLink>
+									</h:column>
+									<h:column style="font-size:300%">#{collaborateur.nom} #{collaborateur.prenom}</h:column>
+
+								</h:panelGrid>
+							</p:dataList>
+						</div>
+						<br /> <br /> <br /> <br /> <br /> <br />
+					</div>
+			</ui:repeat>
+
+
+			<br />
+			<br />
+			<br />
+
+			<ui:repeat var="entite" value="#{majEntiteBean.listeEntites}">
+				<ui:fragment rendered="#{not empty entite.entiteMere }">
+
+					<div
+						style="width: 250px; height: 30px; margin-top: 100px; margin-bottom: 200px; float: left; margin-left: 70px">
+						<center class="nomEntites"
+							id="#{majEntiteBean.getTrimedNom(entite)}_#{majEntiteBean.getTrimedNom(entite.entiteMere)}"
+							style="background-color: rgb(0, 91, 140); border: 1px solid black; border-collapse: collapse; 
+							font-weight: bold; height: 90px; font-size: 1.3em; color: white; cursor: pointer; border-radius: 13px;">
+							<table cellpadding="10">
+								<tr>
+									<td align="center" colspan="2"><span
+										style="position: relative; top: 30%">#{entite.nom}</span></td>
+								</tr>
+								<tr>
+									<td align="left"><span style="font-size: 0.6em;"><a
+											style="text-decoration: underline;">#{entite.responsable.nom}
+												#{entite.responsable.prenom}</a></span></td>
+									<td align="right"><span style="font-size: 0.6em;"><a
+											class="equipeLink" id="#{majEntiteBean.getTrimedNom(entite)}"
+											style="text-decoration: underline;">Equipe</a></span></td>
+								</tr>
+							</table>
+						</center>
+
+						<div class="nomCollaborateurs"
+							id="collaborateurs_#{majEntiteBean.getTrimedNom(entite)}">
+							
+							<p:dataList widgetVar="dtList"
+								value="#{majCollaborateurBean.getOnlyCollaborateursOfEntite(entite)}"
+								var="collaborateur" emptyMessage="" type="none">
+								
+
+								<h:panelGrid columns="2">
+									<h:column>
+										<p:commandLink update=":collaborateurDetail" process="@this"
+											oncomplete="PF('collaborateurDetail').show()"
+											title="Voir details" styleClass="ui-icon ui-icon-search"
+											style="float:left;margin-right:10px" id="cmdLink">
+											<f:setPropertyActionListener value="#{collaborateur}"
+												target="#{majCollaborateurBean.selectedCollaborateur}" />
+										</p:commandLink>
+									</h:column>
+									<h:column style="font-size:300%">#{collaborateur.nom} #{collaborateur.prenom}</h:column>
+
+								</h:panelGrid>
+							</p:dataList>
+						</div>
+						<br /> <br /> <br /> <br /> <br /> <br />
+					</div>
+				</ui:fragment>
+			</ui:repeat>
+		</h:form>
+
+		<p:dialog header="Details du collaborateur "
+			widgetVar="collaborateurDetail" resizable="false" width="440px"
+			height="400px">
+			<p:outputPanel id="collaborateurDetail"
+				style="text-align:center; width:400px; height:400px">
+					<h:outputText style="color:rgb(0, 91, 140);font-weight: bold;"
+						value="Photo :" />
+					<p:graphicImage alt="404" value="#{majCollaborateurBean.selectedCollaborateur.photo}">
+						<f:param></f:param>
+					</p:graphicImage>
+			</p:outputPanel>
+		</p:dialog>
+	</ui:fragment>
+</h:body>
+</html>
